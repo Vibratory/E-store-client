@@ -3,8 +3,10 @@
 import { useState } from "react";
 import HeartFavorite from "./HeartFavorite";
 import { MinusCircle, PlusCircle } from "lucide-react";
-
+import { formatDZD } from "@/lib/actions/actions";
 import useCart from "@/lib/hooks/useCart";
+
+
 
 const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
   const [selectedColor, setSelectedColor] = useState<string>(
@@ -16,6 +18,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
   const [quantity, setQuantity] = useState<number>(1);
 
   const cart = useCart();
+
 
   return (
     <div className="max-w-[400px] flex flex-col gap-4">
@@ -29,7 +32,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
         <p className="text-base-bold">{productInfo.category}</p>
       </div>
 
-      <p className="text-heading3-bold"> {productInfo.price} DA</p>
+      <p className="text-heading3-bold"> {formatDZD(productInfo.price)} </p>
 
       <div className="flex flex-col gap-2">
         <p className="text-base-medium text-grey-2">Description:</p>

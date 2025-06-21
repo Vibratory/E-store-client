@@ -6,17 +6,17 @@ import Image from "next/image";
 const Orders = async () => {
   const { userId } = auth();
 
-  try {
+  
   const orders = await getOrders(userId as string);
 
-  console.log(orders[0].products);
+  //console.log(orders[0].products); <= gives error if products = 0
 
   return (
     <div className="px-10 py-5 max-sm:px-3">
       <p className="text-heading3-bold my-10">Your Orders</p>
       {!orders ||
         (orders.length === 0 && (
-          <p className="text-body-bold my-5">You have no orders yet.</p>
+          <p /*className="text-body-bold my-5"*/>You have no orders yet.</p>
         ))}
 
       <div className="flex flex-col gap-10">
@@ -79,9 +79,7 @@ const Orders = async () => {
       </div>
     </div>
   );
-  } catch (error) {
- console.log("no orders available");
-}
+ 
 };
 
 export default Orders;

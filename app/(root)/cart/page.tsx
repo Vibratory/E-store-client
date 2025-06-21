@@ -1,12 +1,15 @@
 "use client";
 
 import useCart from "@/lib/hooks/useCart";
-
+import React from "react";
 import { useUser } from "@clerk/nextjs";
 import { MinusCircle, PlusCircle, Trash } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { formatDZD } from "@/lib/actions/actions";
 
+
+ 
 const Cart = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -41,6 +44,7 @@ const Cart = () => {
       console.log("[checkout_POST]", err);
     }
   };
+  
 
   return (
     <div className="flex gap-20 py-16 px-10 max-lg:flex-col max-sm:px-3">
@@ -53,6 +57,7 @@ const Cart = () => {
         ) : (
           <div>
             {cart.cartItems.map((cartItem) => (
+              
               <div className="w-full flex max-sm:flex-col max-sm:gap-3 hover:bg-grey-1 px-4 py-3 items-center max-sm:items-start justify-between">
                 <div className="flex items-center">
                   <Image
@@ -70,7 +75,8 @@ const Cart = () => {
                     {cartItem.size && (
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
-                    <p className="text-small-medium">{cartItem.item.price} DA</p>
+                    
+                    <p className="text-small-medium"> {formatDZD(cartItem.item.price)} </p>
                   </div>
                 </div>
 
@@ -105,7 +111,7 @@ const Cart = () => {
         </p>
         <div className="flex justify-between text-body-semibold">
           <span>Total Amount</span>
-          <span>{totalRounded} DA</span>
+          <span>{formatDZD(totalRounded)}</span>
         </div>
         <button
           className="border rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white"

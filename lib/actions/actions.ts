@@ -32,3 +32,12 @@ export const getRelatedProducts = async (productId: string) => {
   const relatedProducts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/related`)
   return await relatedProducts.json()
 }
+
+// function to Format as DA in the DZ local currency
+export const formatDZD = (price: number) => {
+  return new Intl.NumberFormat('FR-DZ', {
+    style: 'currency',
+    currency: 'DZD',
+  }).format(price);
+};
+
