@@ -41,3 +41,6 @@ export const formatDZD = (price: number) => {
   }).format(price);
 };
 
+export const availability = (stock: number): boolean => {
+  return stock > 0;
+};

@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeartFavorite from "./HeartFavorite";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import { formatDZD } from "@/lib/actions/actions";
 import useCart from "@/lib/hooks/useCart";
-
+import toast from "react-hot-toast";
 
 
 const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
+
   const [selectedColor, setSelectedColor] = useState<string>(
     productInfo.colors[0]
   );
@@ -19,8 +20,15 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
   const cart = useCart();
 
+  const [inStock, setInStock] = useState(true)
+
+
+useEffect(()=>{
+  {productInfo.stock <= 0 ? setInStock(false) : setInStock(true) }
+});
 
   return (
+
     <div className="max-w-[400px] flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <p className="text-heading3-bold">{productInfo.title}</p>
@@ -31,6 +39,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
         <p className="text-base-medium text-grey-2">Category:</p>
         <p className="text-base-bold">{productInfo.category}</p>
       </div>
+
 
       <p className="text-heading3-bold"> {formatDZD(productInfo.price)} </p>
 
@@ -46,9 +55,8 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             {productInfo.colors.map((color, index) => (
               <p
                 key={index}
-                className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${
-                  selectedColor === color && "bg-black text-white"
-                }`}
+                className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${selectedColor === color && "bg-black text-white"
+                  }`}
                 onClick={() => setSelectedColor(color)}
               >
                 {color}
@@ -65,9 +73,8 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             {productInfo.sizes.map((size, index) => (
               <p
                 key={index}
-                className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${
-                  selectedSize === size && "bg-black text-white"
-                }`}
+                className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${selectedSize === size && "bg-black text-white"
+                  }`}
                 onClick={() => setSelectedSize(size)}
               >
                 {size}
@@ -94,16 +101,22 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
       <button
         className="outline text-base-bold py-3 rounded-lg hover:bg-black hover:text-white"
+
         onClick={() => {
-          cart.addItem({
-            item: productInfo,
-            quantity,
-            color: selectedColor,
-            size: selectedSize,
-          });
+          {
+            inStock ?
+              cart.addItem({
+                item: productInfo,
+                quantity,
+                color: selectedColor,
+                size: selectedSize,
+              }) : toast.error("Out of stock");
+          }
         }}
       >
-        Add To Cart
+
+        {inStock ? <p>Add to cart</p> : <p>Out of stock</p>}
+
       </button>
     </div>
   );
