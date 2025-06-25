@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react";
 import React from "react";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -27,6 +27,7 @@ type CheckoutFormProps = {
 const CheckoutForm = ({ getdata }: CheckoutFormProps) => {
 
   const {
+    setError,
     register,
 
     handleSubmit,

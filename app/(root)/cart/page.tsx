@@ -125,11 +125,11 @@ const Cart = () => {
     name: user?.fullName,
   }
 
-const getdata =(data:tcheckoutschema)=>{ //data from child form
-setShipInfo (data);
-{data ?  toast("clicked") : toast("not yet clicked")};
+  const getdata = (data: tcheckoutschema) => { //data from child form
+    setShipInfo(data);
+    { data ? toast("clicked") : toast("not yet clicked") };
 
-}
+  }
 
   // checkout handling takes u to form fill in info and then send whats app message with all data to owner who calls and confirms order then ships it
   const handleCheckout = async () => {
@@ -145,14 +145,24 @@ setShipInfo (data);
       }
 
       //send info to api
+      console.log("API URL", `${process.env.NEXT_PUBLIC_API_URL}/checkout`)
+
+      console.log("Sending checkout data:", {
+        cartItems: cart.cartItems,
+        customer,
+        shipInfo,
+      });
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
         method: "POST",
         body: JSON.stringify({ cartItems: cart.cartItems, customer, shipInfo }),
+        headers: {
+          "Content-Type": "application/json",
+        }
       })
 
       //result from backend
       const data = await res.json()
-      window.location.href = data.url
+      // window.location.href = data.url
       console.log(data)
 
       // in case of error
@@ -170,6 +180,16 @@ setShipInfo (data);
       cart.increaseQuantity(itemId)
     } else {
       alert("Cannot add more items. Stock limit reached.")
+    }
+  }
+
+    const handleQuantityDecrease = (itemId: string) => {
+    const cartItem = cartItemsWithFreshStock.find((item) => item.item._id === itemId)
+
+    if (cartItem && cartItem.quantity > 0) {
+      cart.decreaseQuantity(itemId)
+    } else {
+      alert("Can't go below 0 please click delete button if u want to remove item.")
     }
   }
 
@@ -235,20 +255,32 @@ setShipInfo (data);
                     <div className="flex gap-4 items-center">
                       <MinusCircle
                         className="hover:text-red-1 cursor-pointer"
-                        onClick={() => cart.decreaseQuantity(cartItem.item._id)}
+                        onClick={() => handleQuantityDecrease(cartItem.item._id)}
                       />
+
                       <p className="text-body-bold">{cartItem.quantity}</p>
+
                       <PlusCircle
                         className="hover:text-red-1 cursor-pointer"
                         onClick={() => handleQuantityIncrease(cartItem.item._id)}
                       />
                     </div>
+
                   ) : (
+
                     <div className="flex gap-4 items-center">
-                      <MinusCircle
-                        className="hover:text-red-1 cursor-pointer"
-                        onClick={() => cart.decreaseQuantity(cartItem.item._id)}
-                      />
+                     
+                        <MinusCircle
+                          className="text-gray-400 cursor-not-allowed" />
+
+                      
+
+                        <MinusCircle
+                          className="hover:text-red-1 cursor-pointer"
+                          onClick={() => handleQuantityDecrease(cartItem.item._id)} />
+
+                      
+
                       <p className="text-body-bold">{cartItem.quantity}</p>
                       <PlusCircle className="text-gray-400 cursor-not-allowed" />
                     </div>
@@ -285,7 +317,7 @@ setShipInfo (data);
             </div>
           )}
 
-        <CheckoutForm getdata={getdata}/> 
+        <CheckoutForm getdata={getdata} />
 
         <button
           className="border rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
@@ -296,7 +328,7 @@ setShipInfo (data);
         >
           Proceed to Checkout
         </button>
-            <p> here is info{JSON.stringify(shipInfo)}</p>
+        <p> here is info{JSON.stringify(shipInfo)}</p>
 
       </div>
     </div>

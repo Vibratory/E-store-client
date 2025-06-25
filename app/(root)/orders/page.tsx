@@ -1,5 +1,5 @@
-import { getOrders } from "@/lib/actions/actions";
-
+import { formatDZD, getOrders } from "@/lib/actions/actions";
+formatDZD
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 
@@ -25,7 +25,7 @@ const Orders = async () => {
             <div className="flex gap-20 max-md:flex-col max-md:gap-3">
               <p className="text-base-bold">Order ID: {order._id}</p>
               <p className="text-base-bold">
-                Total Amount: {order.totalAmount} DA
+                Total Amount: {formatDZD(order.totalAmount)} 
               </p>
             </div>
 
