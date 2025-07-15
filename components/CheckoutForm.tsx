@@ -1,22 +1,16 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react";
-import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { forwardRef, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
   name: z.string().min(3),
-  number: z.string().min(10, "10 digits minimum").max(10, "10 digits max"),
-  email: z.string().email(),
-  state: z.string(),
-  city: z.string(),
-  zip: z.string().min(5, "5 digits minimum").max(5, "5 digits max"),
-
-}) /*.refine((data) => data.zip === data.zip, {
-    message: "Passwords don't match",
-    path: ["zip"], // path of error
-  });*/
-
+  number: z.string().min(10, "10 digits minimum").max(10, "10 digits max").regex(/^\d+$/, "Must be digits only"),
+  email: z.string().email().nonempty("Field is required"),
+  state: z.string().nonempty("Field is required"),
+  city: z.string().nonempty("Field is required"),
+  zip: z.string().min(5, "5 digits minimum").max(5, "5 digits max").regex(/^\d+$/, "Must be digits only"),
+});
 
 export type tcheckoutschema = z.infer<typeof checkoutSchema>;
 
@@ -24,101 +18,47 @@ type CheckoutFormProps = {
   getdata: (data: tcheckoutschema) => void;
 };
 
-const CheckoutForm = ({ getdata }: CheckoutFormProps) => {
-
+const CheckoutForm = forwardRef(({ getdata }: CheckoutFormProps, ref) => {
   const {
-    setError,
     register,
-
     handleSubmit,
-
-    reset,
-
-    formState: { errors, isSubmitting }
-
+    formState: { errors },
+    reset
   } = useForm<tcheckoutschema>({
     resolver: zodResolver(checkoutSchema),
   });
 
-  const onSubmit = async (data: tcheckoutschema) => {
-    getdata(data); // send to parent
-    //reset();
-  }
+  useImperativeHandle(ref, () => ({
+    submit: () => {
+      handleSubmit((data) => {
+        getdata(data);
+        //reset(); 
+      })();
+    },
+  }));
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-2">
+        <input {...register("name")} placeholder="Name" className="" />
+        {errors.name && <p className="text-red-600">{errors.name.message}</p>}
 
-        <input
-          {...register("name")}
-          placeholder="Name"
-          className="">
-        </input>
-        {errors.name && (
-          <p className="text-red-600"> {`${errors.name.message}`}</p>
-        )}
+        <input {...register("number")} type="text" placeholder="Number" className="" />
+        {errors.number && <p className="text-red-600">{errors.number.message}</p>}
 
-        <input
-          {...register("number")}
-          type="number"
-          placeholder="number"
-          className="top-10">
-        </input>
+        <input {...register("email")} type="email" placeholder="Email" className="" />
+        {errors.email && <p className="text-red-600">{errors.email.message}</p>}
 
-        {errors.number && (
-          <p className="text-red-600"> {`${errors.number.message}`}</p>
-        )}
+        <input {...register("state")} placeholder="State" className="" />
+        <input {...register("city")} placeholder="City" className="" />
 
-        <input
-          {...register("email")}
-          type="email"
-          placeholder="Email"
-          className="">
-        </input>
-
-        {errors.email && (
-          <p className="text-red-600"> {`${errors.email.message}`}</p>
-        )}
-
-        <input
-          {...register("state")}
-          placeholder="State"
-          className="">
-        </input>
-
-        <input
-          {...register("city")}
-          placeholder="City"
-          className="">
-        </input>
-
-        <input
-          {...register("zip",)}
-          type="number"
-          placeholder="Zip"
-          className="">
-        </input>
-
-        {errors.zip && (
-          <p className="text-red-600"> {`${errors.zip.message}`}</p>
-        )}
-
-
-        <button disabled={isSubmitting}
-        
-          type="submit"
-          className="border rounded-lg text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Proceed to Checkout
-        </button>
-
+        <input {...register("zip")} type="text" placeholder="Zip" className="" />
+        {errors.zip && <p className="text-red-600">{errors.zip.message}</p>}
       </form>
-
-
     </div>
-
   );
+});
 
+CheckoutForm.displayName = "CheckoutForm";
 
-};
 export default CheckoutForm;

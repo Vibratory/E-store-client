@@ -1,31 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HeartFavorite from "./HeartFavorite";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import { formatDZD } from "@/lib/actions/actions";
 import useCart from "@/lib/hooks/useCart";
-import toast from "react-hot-toast";
 
 
 const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
-  const [selectedColor, setSelectedColor] = useState<string>(
-    productInfo.colors[0]
-  );
-  const [selectedSize, setSelectedSize] = useState<string>(
-    productInfo.sizes[0]
-  );
+  const [selectedColor, setSelectedColor] = useState("");
+
+  const [selectedSize, setSelectedSize] = useState<string>(productInfo.sizes[0]);
+
   const [quantity, setQuantity] = useState<number>(1);
 
   const cart = useCart();
-
-  const [inStock, setInStock] = useState(true)
-
-
-useEffect(()=>{
-  {productInfo.stock <= 0 ? setInStock(false) : setInStock(true) }
-});
 
   return (
 
@@ -48,41 +38,55 @@ useEffect(()=>{
         <p className="text-small-medium">{productInfo.description}</p>
       </div>
 
-      {productInfo.colors.length > 0 && (
+      {productInfo.colorVariants.length > 0 && (
         <div className="flex flex-col gap-2">
           <p className="text-base-medium text-grey-2">Colors:</p>
           <div className="flex gap-2">
-            {productInfo.colors.map((color, index) => (
-              <p
-                key={index}
-                className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${selectedColor === color && "bg-black text-white"
-                  }`}
-                onClick={() => setSelectedColor(color)}
-              >
-                {color}
-              </p>
+            {productInfo.colorVariants.map((colorVariants, index) => (
+              <div>
+                <p key={index}
+                  className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${selectedColor === colorVariants.name && "bg-black text-white"}`}
+                  onClick={() => setSelectedColor(colorVariants.name)}
+                >
+                  {colorVariants.name}
+                </p>
+              </div>
             ))}
+
           </div>
         </div>
       )}
 
-      {productInfo.sizes.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <p className="text-base-medium text-grey-2">Sizes:</p>
-          <div className="flex gap-2">
-            {productInfo.sizes.map((size, index) => (
-              <p
-                key={index}
-                className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${selectedSize === size && "bg-black text-white"
-                  }`}
-                onClick={() => setSelectedSize(size)}
-              >
-                {size}
-              </p>
-            ))}
-          </div>
-        </div>
-      )}
+      <p className="text-base-medium text-grey-2">Sizes:</p>
+
+      {//drop down menu
+      }
+      <select
+        value={selectedSize}
+        onChange={(e) => setSelectedSize(e.target.value)}
+        className="border border-black px-3 py-2 rounded"
+      >
+        <option value="">--Please choose an option--</option>
+
+        {productInfo.colorVariants.find((color) => color.name === selectedColor)
+          ?.sizes.map((size, index) => (
+            <div>
+              {size.quantity != 0 ? <option key={index} value={size.name}>
+                {size.name}
+              </option> 
+              :
+               <option  disabled key={index} value={size.name}>
+               {size.name} Epuise
+              </option> 
+              
+              }
+              
+            </div>
+
+          ))}
+
+
+      </select>
 
       <div className="flex flex-col gap-2">
         <p className="text-base-medium text-grey-2">Quantity:</p>
@@ -98,24 +102,25 @@ useEffect(()=>{
           />
         </div>
       </div>
-
+      
       <button
-        className="outline text-base-bold py-3 rounded-lg hover:bg-black hover:text-white"
+      className={`outline text-base-bold py-3 rounded-lg transition 
+    ${(!selectedColor || !selectedSize) ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-black hover:text-white"}`}
 
         onClick={() => {
-          {
-            inStock ?
+          if (!selectedColor || !selectedSize) return;
               cart.addItem({
                 item: productInfo,
                 quantity,
                 color: selectedColor,
                 size: selectedSize,
-              }) : toast.error("Out of stock");
+              }) 
           }
-        }}
+        }
+        disabled={!selectedColor || !selectedSize}
       >
 
-        {inStock ? <p>Add to cart</p> : <p>Out of stock</p>}
+        <p>Add to cart</p> 
 
       </button>
     </div>

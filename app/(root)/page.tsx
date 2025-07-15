@@ -6,8 +6,16 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-      <Image src="/banner1.jpg" alt="banner" width={2000} height={1000} className="w-screen" />
+      <Image src="/banner1.avif" alt="banner" width={2000} height={1000} className="object-contain md:object-cover" />
       <Collections />
+
+      {// <New Collections/>
+      }
+ 
+ {// <Sale carousel/>
+      }
+
+
       <ProductList />
     </>
   );

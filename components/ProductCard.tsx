@@ -76,7 +76,6 @@ const ProductCard = ({ product, updateSignedInUser }: ProductCardProps) => {
         <div className="flex justify-between items-center">
           <p className="text-body-bold">{formatDZD(product.price)}</p>
           
-          {product.stock < 3 ? <p className="text-green-500 text-small-bold">Only {product.stock} left</p> :<p></p>}
           
           <HeartFavorite product={product} updateSignedInUser={updateSignedInUser} />
         </div>

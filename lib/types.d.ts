@@ -14,6 +14,7 @@ type ProductType = {
   collections: [string];
   stock: number;
   tags: [string];
+  colorVariants: ColorVariationsType[],
   price: number;
   cost: number;
   sizes: [string];
@@ -36,6 +37,7 @@ type OrderType = {
   products: [OrderItemType]
   shippingRate: string;
   totalAmount: number
+  status: string
 }
 
 type OrderItemType = {
@@ -44,4 +46,13 @@ type OrderItemType = {
   size: string;
   quantity: number;
   _id: string;
+}
+type ColorVariationsType = {
+  name: string,
+  sizes: SizeVariationsType[],
+}
+
+type SizeVariationsType = {
+  name: string,
+  quantity: Number
 }
