@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 import { formatDZD, availability } from "@/lib/actions/actions"
 import CheckoutForm, { tcheckoutschema } from "@/components/CheckoutForm"
 import toast from "react-hot-toast"
+import Link from "next/link"
 
 const Cart = () => {
   const [shipInfo, setShipInfo] = useState<tcheckoutschema>()
@@ -78,6 +79,7 @@ const Cart = () => {
     } catch (err) {
       console.error("[checkout_POST] from front end", err)
     } finally {
+      router.push('/payment_success')
       setIsSubmitting(false)
     }
   }
@@ -121,6 +123,8 @@ const Cart = () => {
         ) : (
           <div>
             {cart.cartItems.map((cartItem) => (
+               <Link
+               href={`/products/${cartItem.item._id}`}>
               <div
                 key={`${cartItem.item._id}-${cartItem.color}-${cartItem.size}`}
                 className="w-full flex max-sm:flex-col max-sm:gap-3 hover:bg-grey-1 px-4 py-3 items-center max-sm:items-start justify-between"
@@ -171,6 +175,7 @@ const Cart = () => {
                   }
                 />
               </div>
+             </Link>
             ))}
           </div>
         )}

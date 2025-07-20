@@ -19,7 +19,7 @@ const Navbar = () => {
   const [query, setQuery] = useState("");
 
   return (
-    <div className="sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
+    <div className="sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center max-sm:px-2 bg-[#77c0bf]">
       <Link href="/">
         <Image src="/logo1.png" alt="logo" width={130} height={100} />
       </Link>
@@ -27,33 +27,32 @@ const Navbar = () => {
       <div className="flex gap-4 text-base-bold max-lg:hidden">
         <Link
           href="/"
-          className={`hover:text-red-1 ${
-            pathname === "/" && "text-red-1"
-          }`}
+          className={`hover:text-[#29465b] text-white ${pathname === "/" && "text-red-1"
+            }`}
         >
           Home
         </Link>
         <Link
           href={user ? "/wishlist" : "/sign-in"}
-          className={`hover:text-red-1 ${
-            pathname === "/wishlist" && "text-red-1"
-          }`}
+          className={`hover:text-[#29465b] text-white ${pathname === "/wishlist" && "text-red-1"
+            }`}
         >
           Wishlist
         </Link>
         <Link
           href={user ? "/orders" : "/sign-in"}
-          className={`hover:text-red-1 ${
-            pathname === "/orders" && "text-red-1"
-          }`}
+          className={`hover:text-[#29465b] text-white ${pathname === "/orders" && "text-red-1"
+            }`}
         >
           Orders
         </Link>
       </div>
 
-      <div className="flex gap-3 border border-grey-2 px-3 py-1 items-center rounded-lg">
+      {//search bar
+      }
+      <div className=" bg-white flex gap-3 border border-grey-2 px-3 py-1 items-center rounded-lg">
         <input
-          className="outline-none max-sm:max-w-[120px]"
+          className="outline-none max-sm:max-w-[120px] "
           placeholder="Search..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -62,17 +61,21 @@ const Navbar = () => {
           disabled={query === ""}
           onClick={() => router.push(`/search/${query}`)}
         >
-          <Search className="cursor-pointer h-4 w-4 hover:text-red-1" />
+          <Search className="cursor-pointer h-4 w-4 hover:text-red-" />
         </button>
       </div>
+
 
       <div className="relative flex gap-3 items-center">
         <Link
           href="/cart"
-          className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white max-md:hidden"
+          className="flex items-center gap-3  rounded-lg px-2 py-1 hover:bg-[#29465b] hover:text-white"
         >
-          <ShoppingCart />
-          <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
+          <ShoppingCart className="text-white" />
+
+          {/*<CartIcon count={cart.cartItems.length}/>*/}
+
+          <p className="text-white text-base-bold ">({cart.cartItems.length})</p>
         </Link>
 
         <Menu
@@ -81,28 +84,27 @@ const Navbar = () => {
         />
 
         {dropdownMenu && (
-          <div className="absolute top-12 right-5 flex flex-col gap-4 p-3 rounded-lg border bg-white text-base-bold lg:hidden">
-            <Link href="/" className="hover:text-red-1">
+          <div className="absolute top-12 right-5 flex flex-col gap-4 p-3 rounded-lg border bg-[#77c0bf] text-base-bold lg:hidden">
+            <Link href="/" className="text-white hover:text-[#29465b]">
               Home
             </Link>
             <Link
               href={user ? "/wishlist" : "/sign-in"}
-              className="hover:text-red-1"
+              className="text-white hover:text-[#29465b]"
             >
               Wishlist
             </Link>
             <Link
               href={user ? "/orders" : "/sign-in"}
-              className="hover:text-red-1"
-            >
+              className="text-white hover:text-[#29465b]"            >
               Orders
             </Link>
             <Link
               href="/cart"
-              className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white"
+              className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-[#29465b] hover:text-white"
             >
-              <ShoppingCart />
-              <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
+              <ShoppingCart className="text-white" />
+              <p className="text-white text-base-bold ">Panier ({cart.cartItems.length})</p>
             </Link>
           </div>
         )}

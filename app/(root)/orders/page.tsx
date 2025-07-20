@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { formatDZD } from "@/lib/actions/actions"; // assuming this is safe for client use
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const Orders = () => {
   const [orders, setOrders] = useState<OrderType[]>([]);
@@ -101,37 +102,40 @@ const Orders = () => {
 
             <div className="flex flex-col gap-5">
               {order.products.map((orderItem: OrderItemType, index: number) => (
-                <div key={index} className="flex gap-4">
-                  <Image
-                    src={orderItem.product.media[0]}
-                    alt={orderItem.product.title}
-                    width={100}
-                    height={100}
-                    className="w-32 h-32 object-cover rounded-lg"
-                  />
-                  <div className="flex flex-col justify-between">
-                    <p className="text-small-medium">
-                      Title: <span className="text-small-bold">{orderItem.product.title}</span>
-                    </p>
-                    {orderItem.color && (
+                <Link
+                  href={`/products/${orderItem.product._id}`}>
+                  <div key={index} className="flex gap-4 hover:bg-[#29465b]">
+                    <Image
+                      src={orderItem.product.media[0]}
+                      alt={orderItem.product.title}
+                      width={100}
+                      height={100}
+                      className="w-32 h-32 object-cover rounded-lg"
+                    />
+                    <div className="flex flex-col justify-between">
                       <p className="text-small-medium">
-                        Color: <span className="text-small-bold">{orderItem.color}</span>
+                        Title: <span className="text-small-bold">{orderItem.product.title}</span>
                       </p>
-                    )}
-                    {orderItem.size && (
+                      {orderItem.color && (
+                        <p className="text-small-medium">
+                          Color: <span className="text-small-bold">{orderItem.color}</span>
+                        </p>
+                      )}
+                      {orderItem.size && (
+                        <p className="text-small-medium">
+                          Size: <span className="text-small-bold">{orderItem.size}</span>
+                        </p>
+                      )}
                       <p className="text-small-medium">
-                        Size: <span className="text-small-bold">{orderItem.size}</span>
+                        Unit price:{" "}
+                        <span className="text-small-bold">{formatDZD(orderItem.product.price)}</span>
                       </p>
-                    )}
-                    <p className="text-small-medium">
-                      Unit price:{" "}
-                      <span className="text-small-bold">{formatDZD(orderItem.product.price)}</span>
-                    </p>
-                    <p className="text-small-medium">
-                      Quantity: <span className="text-small-bold">{orderItem.quantity}</span>
-                    </p>
+                      <p className="text-small-medium">
+                        Quantity: <span className="text-small-bold">{orderItem.quantity}</span>
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </Link>
               ))}
 
               <button

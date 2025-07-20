@@ -1,15 +1,18 @@
 import type { Config } from "tailwindcss";
+const { fontFamily } = require('tailwindcss/defaultTheme'); // Import Tailwind's default font families
+
 
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+
   ],
   theme: {
     fontSize: {
       "heading1-bold": [
-        "50px",
+        "44px",
         {
           lineHeight: "100%",
           fontWeight: "700",
@@ -92,9 +95,19 @@ const config: Config = {
         "grey-1": "#F7F7F7",
         "grey-2": "#8A8A8A",
       },
+        fontFamily: {
+        'open-sans': ['var(--font-open-sans)', ...fontFamily.sans], // Add sans-serif fallback
+        'tsukimi-rounded': ['var(--font-tsukimi-rounded)', ...fontFamily.sans], // Add sans-serif fallback, or `cursive` if more appropriate
+      },
+      boxShadow: {
+      'bottom-only-hover': '0 16px 8px -4px rgba(0, 0, 0, 0.1)',
+      },
     },
   },
-  plugins: [require("tailwind-scrollbar-hide")],
+
+  plugins: [
+    require("tailwind-scrollbar-hide")
+  ],
 };
 export default config;
 

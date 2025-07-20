@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-      <Image src="/banner1.avif" alt="banner" width={2000} height={1000} className="object-contain md:object-cover" />
+      <Image src="/last.png" alt="banner" width={2000} height={1000} className="object-contain md:object-cover mb-10" />
       <Collections />
 
       {// <New Collections/>
