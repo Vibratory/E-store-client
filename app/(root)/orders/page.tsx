@@ -5,6 +5,7 @@ import Image from "next/image";
 import { formatDZD } from "@/lib/actions/actions"; // assuming this is safe for client use
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { Price } from "@/components/Price";
 
 const Orders = () => {
   const [orders, setOrders] = useState<OrderType[]>([]);
@@ -73,6 +74,36 @@ const Orders = () => {
     }
   };
 
+
+
+  {
+    orders.map((order: OrderType) => {
+
+      const totals = order.products.reduce((acc, orderItem) => {
+
+        const { price, newprice, solde } = orderItem.product;
+
+        const effectivePrice = solde && newprice ? newprice : price;
+
+        return acc + effectivePrice * orderItem.quantity;
+      }, 0);
+
+      return (
+        <p>totaolo : {totals}</p>
+      )
+
+    })
+  }
+
+
+
+
+
+
+
+
+
+
   if (loading) return <p>Loading orders...</p>;
 
   return (
@@ -87,9 +118,18 @@ const Orders = () => {
           <div key={order._id} className="flex flex-col gap-8 p-4 hover:bg-grey-1">
             <div className="flex gap-20 max-md:flex-col max-md:gap-3">
               <p className="text-base-bold">Order ID: {order._id}</p>
+
+
               <p className="text-base-bold">
-                Total Amount: {formatDZD(order.totalAmount)}
+                Total Amount: {formatDZD(
+                  order.products.reduce((acc, orderItem) => {
+                    const { price, newprice, solde } = orderItem.product;
+                    const effectivePrice = solde && newprice ? newprice : price;
+                    return acc + effectivePrice * orderItem.quantity;
+                  }, 0)
+                 ) } 
               </p>
+
               <p className="text-base-bold">
                 Status:
                 {order.status === "Canceled" ? (
@@ -128,7 +168,13 @@ const Orders = () => {
                       )}
                       <p className="text-small-medium">
                         Unit price:{" "}
-                        <span className="text-small-bold">{formatDZD(orderItem.product.price)}</span>
+                        <span className="text-small-bold">
+                          <Price
+                            price={orderItem.product.price}
+                            solde={orderItem.product.solde}
+                            newprice={orderItem.product.newprice}
+                          />
+                        </span>
                       </p>
                       <p className="text-small-medium">
                         Quantity: <span className="text-small-bold">{orderItem.quantity}</span>

@@ -10,6 +10,7 @@ import { formatDZD, availability } from "@/lib/actions/actions"
 import CheckoutForm, { tcheckoutschema } from "@/components/CheckoutForm"
 import toast from "react-hot-toast"
 import Link from "next/link"
+import { Price } from "@/components/Price"
 
 const Cart = () => {
   const [shipInfo, setShipInfo] = useState<tcheckoutschema>()
@@ -19,11 +20,17 @@ const Cart = () => {
   const checkoutRef = useRef<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Total cart amount
-  const total = cart.cartItems.reduce(
-    (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity,
-    0
-  )
+  // Total cart amount includes if on sale
+  const total = cart.cartItems.reduce((acc, cartItem) => {
+
+  const { price, newprice, solde } = cartItem.item;
+
+  const effectivePrice = solde && newprice ? newprice : price;
+
+  return acc + effectivePrice * cartItem.quantity;
+}, 0);
+     
+
   const totalRounded = Number.parseFloat(total.toFixed(2))
 
   const customer = {
@@ -123,59 +130,63 @@ const Cart = () => {
         ) : (
           <div>
             {cart.cartItems.map((cartItem) => (
-               <Link
-               href={`/products/${cartItem.item._id}`}>
-              <div
-                key={`${cartItem.item._id}-${cartItem.color}-${cartItem.size}`}
-                className="w-full flex max-sm:flex-col max-sm:gap-3 hover:bg-grey-1 px-4 py-3 items-center max-sm:items-start justify-between"
-              >
-                <div className="flex items-center">
-                  <Image
-                    src={cartItem.item.media?.[0] || "/placeholder.svg"}
-                    width={100}
-                    height={100}
-                    className="rounded-lg w-32 h-32 object-cover"
-                    alt="product"
-                  />
-                  <div className="flex flex-col gap-3 ml-4">
-                    <p className="text-body-bold">{cartItem.item.title}</p>
-                    {cartItem.color && <p className="text-small-medium">Couleur : {cartItem.color}</p>}
-                    {cartItem.size && <p className="text-small-medium">Taille : {cartItem.size}</p>}
-                    <p className="text-small-medium">Prix Unité : {formatDZD(cartItem.item.price)}</p>
+              <Link
+                href={`/products/${cartItem.item._id}`}>
+                <div
+                  key={`${cartItem.item._id}-${cartItem.color}-${cartItem.size}`}
+                  className="w-full flex max-sm:flex-col max-sm:gap-3 hover:bg-grey-1 px-4 py-3 items-center max-sm:items-start justify-between"
+                >
+                  <div className="flex items-center">
+                    <Image
+                      src={cartItem.item.media?.[0] || "/placeholder.svg"}
+                      width={100}
+                      height={100}
+                      className="rounded-lg w-32 h-32 object-cover"
+                      alt="product"
+                    />
+                    <div className="flex flex-col gap-3 ml-4">
+                      <p className="text-body-bold">{cartItem.item.title}</p>
+                      {cartItem.color && <p className="text-small-medium">Couleur : {cartItem.color}</p>}
+                      {cartItem.size && <p className="text-small-medium">Taille : {cartItem.size}</p>}
+                      <p className="text-small-medium">Prix Unité :   <Price
+                        price={cartItem.item.price}
+                        solde={cartItem.item.solde}
+                        newprice={cartItem.item.newprice}
+                      /></p>
+                    </div>
                   </div>
-                </div>
 
-                {/* Quantity Controls */}
-                <div className="flex gap-4 items-center">
-                  <MinusCircle
+                  {/* Quantity Controls */}
+                  <div className="flex gap-4 items-center">
+                    <MinusCircle
+                      className="hover:text-red-1 cursor-pointer"
+                      onClick={() =>
+                        handleQuantityDecrease(cartItem.item._id, cartItem.color, cartItem.size)
+                      }
+                    />
+                    <p className="text-body-bold">{cartItem.quantity}</p>
+                    <PlusCircle
+                      className="hover:text-red-1 cursor-pointer"
+                      onClick={() =>
+                        handleQuantityIncrease(cartItem.item._id, cartItem.color, cartItem.size)
+                      }
+                    />
+                  </div>
+
+                  {/* Trash Button */}
+                  <Trash
                     className="hover:text-red-1 cursor-pointer"
                     onClick={() =>
-                      handleQuantityDecrease(cartItem.item._id, cartItem.color, cartItem.size)
-                    }
-                  />
-                  <p className="text-body-bold">{cartItem.quantity}</p>
-                  <PlusCircle
-                    className="hover:text-red-1 cursor-pointer"
-                    onClick={() =>
-                      handleQuantityIncrease(cartItem.item._id, cartItem.color, cartItem.size)
+                      handleRemove(
+                        cartItem.item._id,
+                        cartItem.color,
+                        cartItem.size,
+                        cartItem.quantity
+                      )
                     }
                   />
                 </div>
-
-                {/* Trash Button */}
-                <Trash
-                  className="hover:text-red-1 cursor-pointer"
-                  onClick={() =>
-                    handleRemove(
-                      cartItem.item._id,
-                      cartItem.color,
-                      cartItem.size,
-                      cartItem.quantity
-                    )
-                  }
-                />
-              </div>
-             </Link>
+              </Link>
             ))}
           </div>
         )}

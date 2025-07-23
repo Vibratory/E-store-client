@@ -11,7 +11,7 @@ const ProductList = async () => {
         <p className="text-body-bold">No products found</p>
       ) : (
         <div className="flex flex-wrap justify-center gap-16 ">
-          {products.map((product: ProductType) => (
+          {products.filter((product: ProductType) => !product.hidden).map((product: ProductType) => (
             <ProductCard key={product._id} product={product}/>
           ))}
         </div>

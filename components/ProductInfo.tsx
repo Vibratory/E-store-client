@@ -3,9 +3,10 @@
 import { useState } from "react";
 import HeartFavorite from "./HeartFavorite";
 import { MinusCircle, PlusCircle } from "lucide-react";
-import { formatDZD } from "@/lib/actions/actions";
 import useCart from "@/lib/hooks/useCart";
 import { ShoppingCart } from "lucide-react";
+import { Price } from "./Price";
+import Link from "next/link";
 
 const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
@@ -17,14 +18,46 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
   const cart = useCart();
 
+
+  const LinkGet = (title : string) => { // to be chnged later id same as title
+    switch (title) {
+      case "Garçons":
+        return "/collections/6857033cb509029e40ff3557";
+      case "Filles":
+        return "/collections/687a974f68702fe15ce75380";
+      case "Chaussures":
+        return "/collections/687a87e868702fe15ce73f24";
+      case "Bébé":
+        return "/collections/6867d8bece179ecb327d858a";
+      default:
+        return "/";
+    }
+  };
+
   return (
 
     <div className="max-w-[400px] flex flex-col gap-4">
       <div className="flex justify-between items-center">
-
         <div className="flex gap-8">
-          <p className="text-base-bold">{productInfo.category}                   </p>
-          <HeartFavorite product={productInfo} />
+
+          {productInfo.collections.map((collection : CollectionType) => {
+
+            const collectionlink = LinkGet(collection.title);
+            /*make tthese loinks clickable */
+
+            return (
+              <div>
+                <Link href="/" className="hover:opacity-50"> Acceuill {">"}</Link>
+
+                <Link href={collectionlink} key={collection._id} className="hover:opacity-50" > {collection.title} {">"}
+                </Link>
+                <Link href="/" key={collection._id} className="hover:opacity-50" > {productInfo.category} {">"}
+                </Link>
+              </div>
+            )
+
+          })}
+          <div className="right-0"><HeartFavorite product={productInfo} /></div>
         </div>
       </div>
 
@@ -35,14 +68,18 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
         <p className="text-small-medium">{productInfo.description}</p>
       </div>
 
-      <p className="text-heading3-bold"> {formatDZD(productInfo.price)} </p>
+      <p className="text-heading3-bold"><Price
+        price={productInfo.price}
+        solde={productInfo.solde}
+        newprice={productInfo.newprice}
+      /></p>
 
       {productInfo.colorVariants.length > 0 && (
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             {productInfo.colorVariants.map((colorVariants, index) => (
-              <div>
-                <p key={index}
+              <div key={index}>
+                <p
                   className={`border border-black px-2 py-1 rounded-lg cursor-pointer ${selectedColor === colorVariants.name && "bg-black text-white"}`}
                   onClick={() => setSelectedColor(colorVariants.name)}
                 >
@@ -61,26 +98,22 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
       <select
         value={selectedSize}
         onChange={(e) => setSelectedSize(e.target.value)}
-        className="border border-black px-3 py-2 rounded bg-[#fdf3e8]"
+        className="  px-3 py-2 rounded bg-[#fdf3e8]"
       >
         <option value="">Sélectionnez une taille</option>
 
         {productInfo.colorVariants.find((color) => color.name === selectedColor)
-          ?.sizes.map((size, index) => (
-            <div>
-              {size.quantity != 0 ? <option key={index} value={size.name}>
+          ?.sizes.map((size, index) =>
+            size.quantity !== 0 ? (
+              <option key={index} value={size.name}>
                 {size.name}
               </option>
-                :
-                <option disabled key={index} value={size.name}>
-                  {size.name} Epuisé
-                </option>
-
-              }
-
-            </div>
-
-          ))}
+            ) : (
+              <option key={index} value={size.name} disabled>
+                {size.name} Épuisé
+              </option>
+            )
+          )}
 
 
       </select>
@@ -89,12 +122,12 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
         <p className="text-base-medium text-grey-2">Quantité:</p>
         <div className="flex gap-4 items-center">
           <MinusCircle
-            className="hover:text-red-1 cursor-pointer"
+            className="hover:text-green-600 cursor-pointer"
             onClick={() => quantity > 1 && setQuantity(quantity - 1)}
           />
           <p className="text-body-bold">{quantity}</p>
           <PlusCircle
-            className="hover:text-red-1 cursor-pointer"
+            className="hover:text-green-600 cursor-pointer"
             onClick={() => setQuantity(quantity + 1)}
           />
         </div>

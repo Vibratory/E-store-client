@@ -11,7 +11,7 @@ type ProductType = {
   description: string;
   media: [string];
   category: string;
-  collections: [string];
+  collections: [CollectionType];
   stock: number;
   tags: [string];
   colorVariants: ColorVariationsType[],
@@ -19,6 +19,9 @@ type ProductType = {
   cost: number;
   sizes: [string];
   colors: [string];
+  hidden: boolean;
+  solde: boolean;
+  newprice: number;
   createdAt: string;
   updatedAt: string;
 };

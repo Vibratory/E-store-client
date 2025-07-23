@@ -19,7 +19,7 @@ const Navbar = () => {
   const [query, setQuery] = useState("");
 
   return (
-    <div className="sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center max-sm:px-2 bg-[#77c0bf]">
+    <div className="sticky top-0 z-30 py-2 px-10 flex gap-2 justify-between items-center max-sm:px-2 bg-[#77c0bf]">
       <Link href="/">
         <Image src="/logo1.png" alt="logo" width={130} height={100} />
       </Link>
