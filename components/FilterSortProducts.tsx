@@ -10,6 +10,10 @@ export const SortedFiltered = ({ products }: SortedFilteredProps) => {
   const [sortBy, setSortBy] = useState("default");
   const [filterByColor, setFilterByColor] = useState("all");
   const [filterBySize, setFilterBySize] = useState("all");
+  const [filterByBrand, setFilterByBrand] = useState("all");
+  const [filterBySale, setFilterBySale] = useState("all");
+  const [filterBySubCategory, setFilterBySubCategory] = useState("all");
+
 
   const filteredProducts = products
     .filter((product: ProductType) => {
@@ -87,6 +91,48 @@ export const SortedFiltered = ({ products }: SortedFilteredProps) => {
           {uniqueSizes.map((size) => (
             <option key={size} value={size}>
               {size}
+            </option>
+          ))}
+        </select>
+
+
+        <select
+          value={filterByBrand}
+          onChange={(e) => setFilterByBrand(e.target.value)}
+          className="px-3 py-2 rounded bg-[#fdf3e8]"
+        >
+          <option value="all">Toutes les Brands</option>
+          {uniqueColors.map((color) => (
+            <option key={color} value={color}>
+              {color}
+            </option>
+          ))}
+        </select>
+
+
+        <select
+          value={filterBySubCategory}
+          onChange={(e) => setFilterBySubCategory(e.target.value)}
+          className="px-3 py-2 rounded bg-[#fdf3e8]"
+        >
+          <option value="all">Toutes les Genres</option>
+          {uniqueColors.map((color) => (
+            <option key={color} value={color}>
+              {color}
+            </option>
+          ))}
+        </select>
+
+
+        <select
+          value={filterBySale}
+          onChange={(e) => setFilterBySale(e.target.value)}
+          className="px-3 py-2 rounded bg-[#fdf3e8]"
+        >
+          <option value="all">Solde</option>
+          {uniqueColors.map((color) => (
+            <option key={color} value={color}>
+              {color}
             </option>
           ))}
         </select>

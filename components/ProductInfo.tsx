@@ -19,8 +19,8 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
   const cart = useCart();
 
 
-  const LinkGet = (title : string) => { // to be chnged later id same as title
-    switch (title) {
+  const LinkGet = (title: string) => {
+    switch (title) { /// change to data from db for more collections/ categories
       case "Garçons":
         return "/collections/6857033cb509029e40ff3557";
       case "Filles":
@@ -34,25 +34,32 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
     }
   };
 
+  // constants for frame styling
+  const frameSize = 180;
+  const borderWidth = 2.5;
+  const borderColor = "#242d3f"; //6880bc //ffc476 //f8a691 //b6d6cb
+  const frameBorderRadius = "2rem";
+
   return (
 
     <div className="max-w-[400px] flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <div className="flex gap-8">
 
-          {productInfo.collections.map((collection : CollectionType) => {
+          {productInfo.collections.map((collection: CollectionType) => {
 
             const collectionlink = LinkGet(collection.title);
             /*make tthese loinks clickable */
 
             return (
               <div>
-                <Link href="/" className="hover:opacity-50"> Acceuill {">"}</Link>
+                <Link href="/" className="hover:opacity-50"> Acceuill &gt;</Link>
 
-                <Link href={collectionlink} key={collection._id} className="hover:opacity-50" > {collection.title} {">"}
+                <Link href={collectionlink} key={collection._id} className="hover:opacity-50" > {collection.title} &gt;
                 </Link>
-                <Link href="/" key={collection._id} className="hover:opacity-50" > {productInfo.category} {">"}
+                <Link href={`/search/${productInfo.category}`} key={collection._id} className="hover:opacity-50" > {productInfo.category} &gt;
                 </Link>
+                <p className="hover:opacity-50">{productInfo.title}</p>
               </div>
             )
 
@@ -132,30 +139,74 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
           />
         </div>
       </div>
+      <div className="relative">
 
-      <button
-        className={`outline text-base-bold py-1 rounded-lg transition text-justify w-40
-    ${(!selectedColor || !selectedSize) ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-black hover:text-white"}`}
+        <div
+          className="absolute z-20 pointer-events-none"
+          style={{
+            top: "3px",
+            left: "2.5px",
+            width: `${frameSize}px`,
+            height: "43px",
+          }}
+        >
+          {/*  Bottom and Right Border */}
+          <div
+            className="absolute bottom-0 right-0"
+            style={{
+              width: "100%", // Will be overridden by border-right for the horizontal part
+              height: "100%", // Will be overridden by border-bottom for the vertical part
+              borderBottom: `${borderWidth}px solid ${borderColor}`,
+              borderRight: `${borderWidth}px solid ${borderColor}`,
+              borderBottomRightRadius: frameBorderRadius,
+            }}
+          ></div>
 
-        onClick={() => {
-          if (!selectedColor || !selectedSize) return;
-          cart.addItem({
-            item: productInfo,
-            quantity,
-            color: selectedColor,
-            size: selectedSize,
-          })
-        }
-        }
+          {/* Half Top Border (left half invisible) */}
+          <div
+            className="absolute top-0 left-0"
+            style={{
+              width: "100%",
+              height: `${borderWidth}px`,
+              background: `linear-gradient(to left, ${borderColor} 50%, transparent 10%)`,
+            }}
+          ></div>
 
-        disabled={!selectedColor || !selectedSize}
-      >
+          {/* Half Left Border (top half invisible) */}
+          <div
+            className="absolute top-0 left-0"
+            style={{
+              width: `${borderWidth}px`,
+              height: "100%",
+              background: `linear-gradient(to top, ${borderColor} 80%, transparent 50%)`,
+            }}
+          ></div>
 
-        <ShoppingCart className="p-0 m-0" />
-        <p>
-          Ajouter au panier</p>
+        </div>
 
-      </button>
+        <button
+          style={{ 
+            width : frameSize,
+            borderBottomRightRadius: frameBorderRadius }}
+          className={`text-base-bold py-1 transition w-40 bg-green-600 text-[#242d3f] 
+    flex items-center justify-center gap-2 pb-2.5 pt-2
+    ${(!selectedColor || !selectedSize) ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-[#ffc476]"}`}
+          onClick={() => {
+            if (!selectedColor || !selectedSize) return;
+            cart.addItem({
+              item: productInfo,
+              quantity,
+              color: selectedColor,
+              size: selectedSize,
+            });
+          }}
+          disabled={!selectedColor || !selectedSize}
+        >
+          <span>Ajouter au panier</span>
+          <ShoppingCart />
+        </button>
+
+      </div>
     </div>
   );
 };

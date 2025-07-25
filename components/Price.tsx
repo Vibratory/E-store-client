@@ -18,7 +18,7 @@ export const Price = ({ price, solde, newprice }: PriceProps) => {
             {solde && newprice ?
                 <>
                     <div className="flex flex-row">
-                        <p className=" line-through">{formatDZD(price)}</p>
+                        <p className="font-light line-through">{formatDZD(price)}</p>
 
                         <p className="text-red-600 mr-6 ">-{Math.round(((price - newprice) / price) * 100)} %</p>
 

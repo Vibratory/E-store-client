@@ -3,6 +3,17 @@ export const getCollections = async () => {
   return await collections.json()
 }
 
+export const getCollectionss = async () => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections`);
+    if (!res.ok) throw new Error("Failed to fetch collections");
+    return await res.json();
+  } catch (err) {
+    console.error("getCollections error:", err);
+    return [];
+  }
+};
+
 export const getCollectionDetails = async (collectionId: string) => {
   const collection = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${collectionId}`)
   return await collection.json()
